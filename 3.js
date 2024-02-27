@@ -22,13 +22,13 @@ function createMeetingScheduler() {
         for (let i = 0; i < meetings.length; i++) {
             if (isInRange(start + 1, meetings[i])) {
                 return false;
-            } else if (isInRange(end - 1, meetings[i][0], meetings[i][1])) {
+            } else if (isInRange(end - 1, meetings[i])) {
                 return false;
             }
         }
         meetings.push([start, end]);
+        // sort every time new meeting is added
         meetings.sort((a, b) => a[0] - b[0]);
-        console.log(meetings);
         return true;
 
     }
@@ -39,22 +39,22 @@ function createMeetingScheduler() {
         for (let i = 0; i < meetings.length; i++) {
             let meeting = meetings[i];
 
-            if (!isInRange(start, meeting[0], meeting[1]) && start + duration <= meeting[0]) {
+            if (!isInRange(start, meeting) && start + duration <= meeting[0]) {
                 availableSlots.push([start, meeting[0]]);
                 start = meetings[i][1];
 
             }
             // check for the last meetings element until end
-            if (i === meetings.length - 1 && !isInRange(end, meeting[0], meeting[1])) {
+            if (i === meetings.length - 1 && !isInRange(end, meeting)) {
                 availableSlots.push([meeting[1], end]);
             }
 
         }
-
         return availableSlots;
     }
-    function isInRange(checkTime, start, end) {
-        return checkTime >= start && checkTime <= end;
+
+    function isInRange(checkTime, meeting) {
+        return checkTime >= meeting[0] && checkTime <= meeting[1];
     }
 
     return { schedule, findAvailableSlots };
